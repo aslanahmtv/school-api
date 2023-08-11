@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    networks:
+      - schoolapi-network
+    depends_on:
+      - db
+    command: >
+      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+  db:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - schoolapi-network
+    env_file:
+      - .env
+
+networks:
+  schoolapi-network:
+    external: true
+
+volumes:
+  postgres_data:
